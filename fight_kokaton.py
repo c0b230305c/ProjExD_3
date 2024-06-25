@@ -106,7 +106,7 @@ class Beam:
         self.vx, self.vy = bird.dire  
         self.ang = math.atan2(-self.vy, self.vx)
         kakudo = math.degrees(self.ang)
-        self.img =pg.transform.rotozoom(self.img, kakudo, 1.0)
+        self.img =pg.transform.rotozoom(self.img, kakudo, 1.0) ##
 
     def update(self, screen: pg.Surface):
         """
@@ -148,6 +148,26 @@ class Bomb:
         self.rct.move_ip(self.vx, self.vy)
         screen.blit(self.img, self.rct)
 
+class Score:
+    def __init__(self):
+        """
+        scoreを表示させるためのイニシャライズ
+        """
+        self.fonto = pg.font.SysFont("hgp創英角ﾎﾟｯﾌﾟ体", 30)
+        self.color = (0, 0, 255)
+        self.score = 0
+        self.img = self.fonto.render(f"スコア:{self.score}", 0, self.color)
+
+    def update(self, screen: pg.Surface):
+        """
+        爆弾を速度ベクトルself.vx, self.vyに基づき移動させる
+        引数 screen：画面Surface
+        """
+        self.img = self.fonto.render(f"スコア:{self.score}", 0, self.color)
+        screen.blit(self.img,[100, HEIGHT-50])
+
+    
+
 
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
@@ -159,7 +179,8 @@ def main():
     bombs = [Bomb((255, 0, 0), 10)for _ in range(NuM_OF_BOMBS)]
     clock = pg.time.Clock()
     tmr = 0
-    beamMulti = []  
+    beamMulti = []
+    num = Score()  
     
     while True:
         for event in pg.event.get():
@@ -190,6 +211,7 @@ def main():
                 if beamMulti[j] is not None:
                     if bombs[i] is not None:
                         if beamMulti[j].rct.colliderect(bombs[i].rct):
+                            num.score += 1
                             bombs[i] = None
                             beamMulti[j] = None
                             bird.change_img(6,screen)
@@ -207,6 +229,7 @@ def main():
 
         for bomb in bombs:
             bomb.update(screen)
+        num.update(screen)
         pg.display.update()
         tmr += 1
         clock.tick(50)
