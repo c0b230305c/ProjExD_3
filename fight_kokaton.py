@@ -83,6 +83,7 @@ class Bird:
             self.img = __class__.imgs[tuple(sum_mv)]
         screen.blit(self.img, self.rct)
 
+
 class Beam:
     """
     こうかとんが放つビームに関するクラス
@@ -94,8 +95,8 @@ class Beam:
         """
         self.img = pg.image.load(f"fig/beam.png")
         self.rct = self.img.get_rect()
-        self.rct.centery = bird.rct.centery
-        self.rct.left = bird.rct.right #こうかとんの右座標
+        self.rct.centery = bird.rct.centery  # こうかとんの中心縦座標をビームの中心縦座標に設定
+        self.rct.left = bird.rct.right  # こうかとん右座標をビーム左座標に設定
         self.vx, self.vy = +5, 0
 
     def update(self, screen: pg.Surface):
@@ -144,8 +145,8 @@ def main():
     screen = pg.display.set_mode((WIDTH, HEIGHT))    
     bg_img = pg.image.load("fig/pg_bg.jpg")
     bird = Bird((300, 200))
-    bomb = Bomb((255, 0, 0), 10)
     beam = None
+    bomb = Bomb((255, 0, 0), 10)
     clock = pg.time.Clock()
     tmr = 0
     while True:
@@ -153,22 +154,30 @@ def main():
             if event.type == pg.QUIT:
                 return
             if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
+                # スペースキー押下でBeamクラスのインスタンス生成
                 beam = Beam(bird)
-                 
         screen.blit(bg_img, [0, 0])
         
-        if bird.rct.colliderect(bomb.rct):
-            # ゲームオーバー時に，こうかとん画像を切り替え，1秒間表示させる
-            bird.change_img(8, screen)
-            pg.display.update()
-            time.sleep(1)
-            return
+        if bomb is not None:
+            if bird.rct.colliderect(bomb.rct):
+                # ゲームオーバー時に，こうかとん画像を切り替え，1秒間表示させる
+                bird.change_img(8, screen)
+                pg.display.update()
+                time.sleep(1)
+                return
+
+        if bomb is not None:
+            if beam is not None:
+                if bomb.rct.colliderect(beam.rct):
+                    bomb = None
+                    beam = None
 
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
-        if beam is  not None:
-            beam.update(screen)   
-        bomb.update(screen)
+        if beam is not None:
+            beam.update(screen)
+        if bomb is not None:
+            bomb.update(screen)
         pg.display.update()
         tmr += 1
         clock.tick(50)
