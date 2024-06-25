@@ -151,6 +151,7 @@ def main():
     bombs = [Bomb((255, 0, 0), 10)for _ in range(NuM_OF_BOMBS)]
     clock = pg.time.Clock()
     tmr = 0
+    
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -174,6 +175,7 @@ def main():
                     bombs[i] = None
                     beam = None
                     bird.change_img(6,screen)
+
         bombs = [bomb for bomb in bombs if bomb is not None]
 
         key_lst = pg.key.get_pressed()
