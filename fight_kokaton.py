@@ -222,7 +222,6 @@ def main():
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
 
-        
         for beam in beamMulti:
             if beam is not None:
                 beam.update(screen)
