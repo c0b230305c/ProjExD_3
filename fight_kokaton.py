@@ -205,7 +205,6 @@ def main():
                 time.sleep(5)
                 return
         
-
         for i in range(len(bombs)):
             for j in range(len(beamMulti)):
                 if beamMulti[j] is not None:
